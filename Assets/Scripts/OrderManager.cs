@@ -7,11 +7,23 @@ public class OrderManager : MonoBehaviour
     private PlayerManager thePlayer;    //이벤트 도중에 키입력 처리 방지
     private List<MovingObject> characters;
 
+        static public OrderManager instance;
+
 
     // Start is called before the first frame update
     void Start()
     {
         thePlayer = FindObjectOfType<PlayerManager>();
+
+        if(instance == null)
+        {
+            DontDestroyOnLoad(this.gameObject);
+            instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
         
     }
     

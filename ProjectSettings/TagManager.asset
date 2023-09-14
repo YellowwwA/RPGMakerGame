@@ -56,3 +56,6 @@ TagManager:
   - name: UI
     uniqueID: 1328878855
     locked: 0
+  - name: Weather
+    uniqueID: 2495477081
+    locked: 0
