@@ -6,12 +6,14 @@ public class TestDialogue : MonoBehaviour
 {
     [SerializeField]
     public Dialogue dialogue;
-
+    
+    private OrderManager theOrder;
     private DialogueManager theDM;
 
     // Start is called before the first frame update
     void Start()
     {
+        theOrder = FindObjectOfType<OrderManager>();
         theDM = FindObjectOfType<DialogueManager>();   
     }
 
@@ -19,7 +21,16 @@ public class TestDialogue : MonoBehaviour
     {
         if(collision.gameObject.name == "Player")
         {
-            theDM.ShowDialogue(dialogue);
+            StartCoroutine(TestDialogueCoroutine());
         }
+    }
+    IEnumerator TestDialogueCoroutine()
+    {
+        theOrder.NotMove();
+        theDM.ShowDialogue(dialogue);
+        yield return new WaitUntil(() => !theDM.talking);
+
+        theOrder.Move();
+
     }
 }

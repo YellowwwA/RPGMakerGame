@@ -5,8 +5,9 @@ using UnityEngine;
 [System.Serializable]
 public class Dialogue
 {
-	[TextArea(1,2)]
+	[TextArea]
 	public string[] sentences;
+
 	public Sprite[] sprites;
 	public Sprite[] dialogueWindows;
 
