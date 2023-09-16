@@ -43,6 +43,8 @@ public class DialogueManager : MonoBehaviour
     public bool talking = false;
     private bool keyActivated = false;
 
+    private bool onlyText = false;  //part21
+
     // Start is called before the first frame update
     void Start()
     {
@@ -54,9 +56,38 @@ public class DialogueManager : MonoBehaviour
         theAudio = FindObjectOfType<AudioManager>();
     }
 
+    public void ShowText(string[] _sentences)  //Part21 문열기 강의에서 추가한 코드
+    {
+        talking = true;
+        onlyText = true;
+
+        for(int i = 0; i < _sentences.Length; i++)
+        {
+            listSentences.Add(_sentences[i]);
+        }
+        StartCoroutine(StartTextCoroutine());
+    }   
+    IEnumerator StartTextCoroutine()    //Part21 문열기 강의에서 추가한 코드
+    {
+
+        keyActivated = true;
+        for(int i = 0; i< listSentences[count].Length; i++)
+        {
+            text.text += listSentences[count][i];   //첫번째 문장의 첫글자부터 하나씩 출력
+            if( i % 7 == 1)
+            {
+                theAudio.Play(typeSound);
+            }
+            yield return new WaitForSeconds(0.01f);
+        }
+    }
+
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@222
+
     public void ShowDialogue(Dialogue dialogue)
     {
         talking = true;
+        onlyText = false;   //part21
 
         for(int i = 0; i<dialogue.sentences.Length; i++)
         {
@@ -148,7 +179,10 @@ public class DialogueManager : MonoBehaviour
                 else
                 {
                     StopAllCoroutines();
-                    StartCoroutine(StartDialogueCoroutine());
+                    if(onlyText)    //part21
+                        StartCoroutine(StartTextCoroutine());
+                    else
+                        StartCoroutine(StartDialogueCoroutine());
                 }
             }
         }
