@@ -27,6 +27,20 @@ public class DatabaseManager : MonoBehaviour
 
     public List<Item> itemList = new List<Item>();
 
+    public void UseItem(int _itemID)
+    {
+        switch(_itemID)
+        {
+            case 10001:
+                Debug.Log("hp가 50 회복되었습니다.");
+                //ex)thePlayer.hp += 50;
+                break;
+            case 20001:
+                Debug.Log("Mp가 15 회복되었습니다.");
+                break;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {

@@ -5,13 +5,19 @@ using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
+    public static Inventory instance;
+
+    private DatabaseManager theDatabase;
     private OrderManager theOrder;
     private AudioManager theAudio;
+    private OkOrCancel theOOC;
+
     public string key_sound;
     public string enter_sound;
     public string cancel_sound;
     public string open_sound;
     public string beep_sound;
+    public string itemdrink_sound;
 
     private InventorySlot[] slots;  //인벤토리 슬롯들
 
@@ -25,6 +31,8 @@ public class Inventory : MonoBehaviour
 
     public GameObject go; //인벤토리 활성화 비활성화
     public GameObject[] selectedTabImages;
+    public GameObject go_OOC; //선택지 활성화 비활성화
+    public GameObject prefab_Floating_Text;
 
     private int selectedItem;   //선택된 아이템
     private int selectedTab; //선택된 탭
@@ -40,11 +48,16 @@ public class Inventory : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        instance = this;
+
+        theOOC = FindObjectOfType<OkOrCancel>();
         theOrder = FindObjectOfType<OrderManager>();
         theAudio = FindObjectOfType<AudioManager>();
+        theDatabase = FindObjectOfType<DatabaseManager>();
         inventoryItemList = new List<Item>();
         inventoryTabList = new List<Item>();
         slots = tf.GetComponentsInChildren<InventorySlot>();
+        /*
         inventoryItemList.Add(new Item(10001, "빨간 포션", "체력을 50 회복시켜주는 기적의 물약", Item.ItemType.Use));
         inventoryItemList.Add(new Item(10002, "파란 포션", "마나를 15 회복시켜주는 기적의 물약", Item.ItemType.Use));
         inventoryItemList.Add(new Item(10003, "농축 빨간 포션", "체력을 350 회복시켜주는 기적의 농축 물약", Item.ItemType.Use));
@@ -54,7 +67,40 @@ public class Inventory : MonoBehaviour
         inventoryItemList.Add(new Item(21001, "사파이어 반지", "1분에 마나 1을 회복시켜주는 마법 반지", Item.ItemType.Equip));
         inventoryItemList.Add(new Item(30001, "고대 유물의 조각 1", "반으로 쪼개진 고대 유물의 파편", Item.ItemType.Quest));
         inventoryItemList.Add(new Item(30002, "고대 유물의 조각 2", "반으로 쪼개진 고대 유물의 파편", Item.ItemType.Quest));
-        inventoryItemList.Add(new Item(30003, "고대 유물", "고대 유적에 잠들어있던 고대의 유물", Item.ItemType.Quest));
+        inventoryItemList.Add(new Item(30003, "고대 유물", "고대 유적에 잠들어있던 고대의 유물", Item.ItemType.Quest));*/
+    }
+
+    public void GetAnItem(int _itemID, int _count = 1)
+    {
+        for(int i = 0; i<theDatabase.itemList.Count; i++)   //데이터베이스 아이템 검색
+        {
+            if(_itemID == theDatabase.itemList[i].itemID)   //데이터베이스에 아이템 발견
+            {
+                var clone = Instantiate(prefab_Floating_Text, PlayerManager.instance.transform.position, Quaternion.Euler(Vector3.zero)); //프리팹 생성, 생성할 위치,각도
+                clone.GetComponent<FloatingText>().text.text = theDatabase.itemList[i].itemName + " " + _count + "개 획득 +";
+                clone.transform.SetParent(this.transform);
+
+                for(int j = 0; j<inventoryItemList.Count; j++)  //소지품에 같은 아이템이 있는지 검색
+                {
+                    if(inventoryItemList[j].itemID == _itemID)  //소지품에 같은 아이템이 있다 -> 개수만 증감
+                    {
+                        if(inventoryItemList[j].itemType == Item.ItemType.Use)
+                        {
+                            inventoryItemList[j].itemCount += _count;
+                            return;
+                        }
+                        else
+                        {
+                            inventoryItemList.Add(theDatabase.itemList[i]);
+                        }
+                        return;
+                    }
+                }
+                inventoryItemList.Add(theDatabase.itemList[i]); //갖고있지 않은 아이템일때는 소지품에 해당 아이템 추가
+                return;
+            }
+        }
+        Debug.LogError("데이터베이스에 해당 ID값을 가진 아이템이 존재하지 않습니다.");   //데이터베이스에 ItemID 없음
     }
 
     public void ShowTab()   //탭 활성화
@@ -301,6 +347,7 @@ public class Inventory : MonoBehaviour
                                 theAudio.Play(enter_sound);
                                 stopKeyInput = true;
                                 //물약을 마실거냐? 같은 질의 선택지 호출
+                                StartCoroutine(OOCCoroutine());
                             }
                             else if(selectedTab == 1)
                             {
@@ -327,5 +374,32 @@ public class Inventory : MonoBehaviour
                     preventExec = false;
             }
         }
+    }
+
+    IEnumerator OOCCoroutine()
+    {
+        go_OOC.SetActive(true);
+        theOOC.ShowTwoChoice("사용", "취소");
+        yield return new WaitUntil(() => !theOOC.activated);
+        if(theOOC.GetResult())
+        {
+            for(int i = 0; i<inventoryItemList.Count; i++)
+            {
+                if(inventoryItemList[i].itemID == inventoryTabList[selectedItem].itemID)
+                {
+                    theDatabase.UseItem(inventoryItemList[i].itemID);
+                    if(inventoryItemList[i].itemCount>1)
+                        inventoryItemList[i].itemCount--;
+                    else
+                        inventoryItemList.RemoveAt(i);
+                    
+                    theAudio.Play(itemdrink_sound);
+                    ShowItem();
+                    break;
+                }
+            }
+        }
+        stopKeyInput = false;
+        go_OOC.SetActive(false);
     }
 }
