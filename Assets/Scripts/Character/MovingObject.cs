@@ -96,7 +96,7 @@ public class MovingObject : MonoBehaviour
             {
                 transform.Translate(vector.x * speed, vector.y * speed, 0);
                 currentWalkCount++;
-                if(currentWalkCount == 12)
+                if(currentWalkCount == walkCount * 0.5f +2)
                     boxCollider.offset = Vector2.zero;
                 yield return new WaitForSeconds(0.01f);
             }
