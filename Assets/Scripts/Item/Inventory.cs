@@ -11,6 +11,7 @@ public class Inventory : MonoBehaviour
     private OrderManager theOrder;
     private AudioManager theAudio;
     private OkOrCancel theOOC;
+    private Equipment theEquip;
 
     public string key_sound;
     public string enter_sound;
@@ -50,6 +51,7 @@ public class Inventory : MonoBehaviour
     {
         instance = this;
 
+        theEquip = FindObjectOfType<Equipment>();
         theOOC = FindObjectOfType<OkOrCancel>();
         theOrder = FindObjectOfType<OrderManager>();
         theAudio = FindObjectOfType<AudioManager>();
@@ -68,6 +70,10 @@ public class Inventory : MonoBehaviour
         inventoryItemList.Add(new Item(30001, "고대 유물의 조각 1", "반으로 쪼개진 고대 유물의 파편", Item.ItemType.Quest));
         inventoryItemList.Add(new Item(30002, "고대 유물의 조각 2", "반으로 쪼개진 고대 유물의 파편", Item.ItemType.Quest));
         inventoryItemList.Add(new Item(30003, "고대 유물", "고대 유적에 잠들어있던 고대의 유물", Item.ItemType.Quest));*/
+    }
+    public void EquipToInventory(Item _item)
+    {
+        inventoryItemList.Add(_item);
     }
 
     public void GetAnItem(int _itemID, int _count = 1)
@@ -344,14 +350,14 @@ public class Inventory : MonoBehaviour
                         {
                             if(selectedTab == 0)    //소모품
                             {
-                                theAudio.Play(enter_sound);
-                                stopKeyInput = true;
                                 //물약을 마실거냐? 같은 질의 선택지 호출
-                                StartCoroutine(OOCCoroutine());
+                                StartCoroutine(OOCCoroutine("사용", "취소"));
                             }
                             else if(selectedTab == 1)
                             {
                                 //장비 장착
+                                //장비를 장착할거냐? 같은 질의 선택지 호출
+                                StartCoroutine(OOCCoroutine("장착", "취소"));
                             }
                             else//비프음 출력
                             {
@@ -376,10 +382,13 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    IEnumerator OOCCoroutine()
+    IEnumerator OOCCoroutine(string _up, string _down)
     {
+        theAudio.Play(enter_sound);
+        stopKeyInput = true;
+
         go_OOC.SetActive(true);
-        theOOC.ShowTwoChoice("사용", "취소");
+        theOOC.ShowTwoChoice(_up, _down);
         yield return new WaitUntil(() => !theOOC.activated);
         if(theOOC.GetResult())
         {
@@ -387,15 +396,26 @@ public class Inventory : MonoBehaviour
             {
                 if(inventoryItemList[i].itemID == inventoryTabList[selectedItem].itemID)
                 {
-                    theDatabase.UseItem(inventoryItemList[i].itemID);
-                    if(inventoryItemList[i].itemCount>1)
-                        inventoryItemList[i].itemCount--;
-                    else
+                    if(selectedTab == 0)
+                    {
+                        theDatabase.UseItem(inventoryItemList[i].itemID);
+                        if(inventoryItemList[i].itemCount>1)
+                            inventoryItemList[i].itemCount--;
+                        else
+                            inventoryItemList.RemoveAt(i);
+                        
+                        theAudio.Play(itemdrink_sound);
+                        ShowItem();
+                        break;
+                    }
+                    else if(selectedTab == 1)
+                    {
+                        theEquip.EquipItem(inventoryItemList[i]);
                         inventoryItemList.RemoveAt(i);
-                    
-                    theAudio.Play(itemdrink_sound);
-                    ShowItem();
-                    break;
+                        ShowItem();
+                        break;
+                    }
+
                 }
             }
         }

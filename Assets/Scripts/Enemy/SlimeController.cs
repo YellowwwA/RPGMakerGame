@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SlimeController : MovingObject
 {
-    public int atk; //슬라임의 공격력
+    //public int atk; //슬라임의 공격력
     public float attackDelay; //공격 유예
 
     public float inter_MoveWaitTime; //대기시간, ex슬라임의 공격 쿨타임
@@ -16,6 +16,8 @@ public class SlimeController : MovingObject
     
     private int random_int;
     private string direction;
+
+    public GameObject healthBar;
 
     // Start is called before the first frame update
     void Start()
@@ -56,6 +58,9 @@ public class SlimeController : MovingObject
         else
             flip.x = 1f;
         this.transform.localScale = flip;
+
+        healthBar.transform.localScale = flip;
+
         animator.SetTrigger("Attack");
         StartCoroutine(WaitCoroutine());
     }
@@ -65,7 +70,8 @@ public class SlimeController : MovingObject
         yield return new WaitForSeconds(attackDelay);
         AudioManager.instance.Play(atkSound);
         if(NearPlayer())
-            Debug.Log("슬라임이 플레이어에게 "+atk+"만큼의 데미지를 입혔습니다.");
+            PlayerStat.instance.Hit(GetComponent<EnemyStat>().atk);
+            //Debug.Log("슬라임이 플레이어에게 "+atk+"만큼의 데미지를 입혔습니다.");
     }
 
     private bool NearPlayer()
