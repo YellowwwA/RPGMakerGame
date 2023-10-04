@@ -8,7 +8,7 @@ public class PlayerManager : MovingObject
     static public PlayerManager instance;
 
     public string currentMapName;
-
+    public string currentSceneName; 
 
 
     //public AudioClip walkSound_1;
@@ -21,6 +21,7 @@ public class PlayerManager : MovingObject
     public string walkSound_4;
 
     private AudioManager theAudio;
+    private SaveNLoad theSaveNLoad;
 
     public float runSpeed;
     private float applyRunSpeed;
@@ -50,6 +51,8 @@ public class PlayerManager : MovingObject
 
             animator = GetComponent<Animator>();
             instance = this;
+
+            theSaveNLoad = FindObjectOfType<SaveNLoad>();
         }
         else
         {
@@ -134,6 +137,17 @@ public class PlayerManager : MovingObject
     // Update is called once per frame
     void Update()
     {
+        //if(Input.GetKeyDown(KeyCode.F5))
+        //{
+            //저장
+        //    theSaveNLoad.CallSave();
+        //}
+        if(Input.GetKeyDown(KeyCode.F9))
+        {
+            //불러오기
+            theSaveNLoad.CallLoad();
+        }
+
         if(canMove && !notMove && !attacking)
         {
             if(Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
