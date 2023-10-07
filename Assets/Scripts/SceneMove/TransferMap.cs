@@ -23,7 +23,11 @@ public class TransferMap : MonoBehaviour
     private PlayerManager thePlayer;
     private FadeManager theFade;
     private OrderManager theOrder;
+    private Event1 theEvent;
 
+    private Inventory theInven;
+    private bool CanOpen = false;
+    //private int keyNum;
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +35,8 @@ public class TransferMap : MonoBehaviour
         thePlayer = FindObjectOfType<PlayerManager>();
         theFade = FindObjectOfType<FadeManager>();
         theOrder = FindObjectOfType<OrderManager>();
+        theInven = FindObjectOfType<Inventory>();
+        theEvent = FindObjectOfType<Event1>();
     }
     
     private void OnTriggerEnter2D(Collider2D collision)
@@ -51,8 +57,10 @@ public class TransferMap : MonoBehaviour
         {
             if(collision.gameObject.name == "Player")
             {
-                if(Input.GetKeyDown(KeyCode.Z))
+                KeyCheck();
+                if(Input.GetKeyDown(KeyCode.Z)&& CanOpen )
                 {
+                    
                     vector.Set(thePlayer.animator.GetFloat("DirX"), thePlayer.animator.GetFloat("DirY"));
                     switch(direction)
                     {
@@ -108,5 +116,19 @@ public class TransferMap : MonoBehaviour
             theFade.FadeIn();
             //yield return new WaitForSeconds(0.5f);
             theOrder.Move();
+    }
+    private void KeyCheck()
+    {
+        for(int j = 0; j<theInven.inventoryItemList.Count; j++)  //소지품에 아이템이 있는지 검색
+        {
+            if(theInven.inventoryItemList[j].itemID == 40002)  //소지품에 키 아이템이 있다
+            {
+                    Debug.Log("키획득");
+                    CanOpen = true;
+                    StartCoroutine(theEvent.EventCoroutine());
+                    theInven.inventoryItemList.RemoveAt(j);
+                    //keyNum = j;
+            }
+        }
     }
 }

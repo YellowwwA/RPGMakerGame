@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerManager : MovingObject
 {
@@ -22,6 +23,8 @@ public class PlayerManager : MovingObject
 
     private AudioManager theAudio;
     private SaveNLoad theSaveNLoad;
+
+    private WeatherManager theWeather;
 
     public float runSpeed;
     private float applyRunSpeed;
@@ -53,6 +56,7 @@ public class PlayerManager : MovingObject
             instance = this;
 
             theSaveNLoad = FindObjectOfType<SaveNLoad>();
+            theWeather = FindObjectOfType<WeatherManager>();
         }
         else
         {
@@ -176,5 +180,9 @@ public class PlayerManager : MovingObject
             }
         }
 
+        if(SceneManager.GetActiveScene().name == "school 1F")
+        {
+            theWeather.RainStop();
+        }       
     }
 }

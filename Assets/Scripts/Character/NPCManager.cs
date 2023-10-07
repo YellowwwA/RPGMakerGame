@@ -42,11 +42,11 @@ public class NPCManager : MovingObject
             {
                 yield return new WaitUntil(() => queue.Count < 2);
                 base.Move(npc.direction[i], npc.frequency);
-
+                /*
                 if(i == npc.direction.Length - 1)
                 {
                     i = -1;
-                }
+                }*/
             }
         }
     }

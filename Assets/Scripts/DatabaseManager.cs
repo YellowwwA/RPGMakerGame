@@ -83,6 +83,8 @@ public class DatabaseManager : MonoBehaviour
         itemList.Add(new Item(30001, "고대 유물의 조각 1", "반으로 쪼개진 고대 유물의 파편", Item.ItemType.Quest));
         itemList.Add(new Item(30002, "고대 유물의 조각 2", "반으로 쪼개진 고대 유물의 파편", Item.ItemType.Quest));
         itemList.Add(new Item(30003, "고대 유물", "고대 유적에 잠들어있던 고대의 유물", Item.ItemType.Quest));
+        itemList.Add(new Item(40002, "의문의 열쇠", "어딘가를 열 수 있는 열쇠", Item.ItemType.Quest));
+
     }
 
 }

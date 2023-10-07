@@ -14,6 +14,8 @@ public class EnemyStat : MonoBehaviour
     public GameObject healthBarBackground;
     public Image healthBarFilled;
 
+    public GameObject Item;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,6 +35,7 @@ public class EnemyStat : MonoBehaviour
 
         if(currentHp <= 0)
         {
+            StartCoroutine(ItemWaitCoroutine());
             Destroy(this.gameObject);
             PlayerStat.instance.currentEXP += exp;
         }
@@ -48,6 +51,13 @@ public class EnemyStat : MonoBehaviour
     {
         yield return new WaitForSeconds(3f);
         healthBarBackground.SetActive(false);
+    }
+    IEnumerator ItemWaitCoroutine()
+    {
+        Item.transform.position = this.gameObject.transform.position;
+        Item.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+
     }
 
 }

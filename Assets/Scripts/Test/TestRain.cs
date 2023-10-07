@@ -16,7 +16,10 @@ public class TestRain : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(rain)
-            theWeather.Rain();
+        {
+                theWeather.Rain();
+        }
+
         else
             theWeather.RainStop();
     }
