@@ -65,7 +65,7 @@ public class DatabaseManager : MonoBehaviour
                 else
                     thePlayerStat.currentMP = thePlayerStat.mp;
                 FloatText(50, "BLUE");
-                break;
+                break;           
         }
     }
 
@@ -84,6 +84,10 @@ public class DatabaseManager : MonoBehaviour
         itemList.Add(new Item(30002, "고대 유물의 조각 2", "반으로 쪼개진 고대 유물의 파편", Item.ItemType.Quest));
         itemList.Add(new Item(30003, "고대 유물", "고대 유적에 잠들어있던 고대의 유물", Item.ItemType.Quest));
         itemList.Add(new Item(40002, "의문의 열쇠", "어딘가를 열 수 있는 열쇠", Item.ItemType.Quest));
+        itemList.Add(new Item(40003, "교실 열쇠 뭉치", "1학년2반 교실 열쇠를 포함한 1학년 교실들 열쇠 뭉치", Item.ItemType.Quest));
+        itemList.Add(new Item(40004, "숙제 공책", "숙제를 적어야 하는 공책", Item.ItemType.Quest));
+        itemList.Add(new Item(40005, "손전등", "깜깜할 때 유용하게 사용할 수 있을 것 같은 손전등", Item.ItemType.ETC));
+
 
     }
 

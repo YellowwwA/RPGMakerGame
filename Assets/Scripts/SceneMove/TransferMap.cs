@@ -19,14 +19,25 @@ public class TransferMap : MonoBehaviour
     
     [Tooltip("문이 있으면 : true, 문이 없으면  : false")]
     public bool door; //문이 있는지 없는지
+    public bool Lock;
+    public bool classroom;
+    public bool finalExit;
 
     private PlayerManager thePlayer;
     private FadeManager theFade;
     private OrderManager theOrder;
     private Event1 theEvent;
-
+    private NumberSystem theNumSystem;
     private Inventory theInven;
-    private bool CanOpen = false;
+    private ChoiceManager theChoice;
+    private TestChoice theTestChoice;
+
+    private bool KeyOpen = false;
+    private bool NumOpen = false;
+    private bool classKey = false;
+    private bool choiceOpen = false;
+    
+
     //private int keyNum;
 
     // Start is called before the first frame update
@@ -37,11 +48,14 @@ public class TransferMap : MonoBehaviour
         theOrder = FindObjectOfType<OrderManager>();
         theInven = FindObjectOfType<Inventory>();
         theEvent = FindObjectOfType<Event1>();
+        theNumSystem = FindObjectOfType<NumberSystem>();
+        theChoice = FindObjectOfType<ChoiceManager>();
+        theTestChoice = FindObjectOfType<TestChoice>();
     }
     
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(!door)
+        if((!door) && (!Lock) && (!classroom) && (!finalExit))
         {
             if(collision.gameObject.name == "Player")
             {
@@ -58,9 +72,9 @@ public class TransferMap : MonoBehaviour
             if(collision.gameObject.name == "Player")
             {
                 KeyCheck();
-                if(Input.GetKeyDown(KeyCode.Z)&& CanOpen )
+                if(Input.GetKeyDown(KeyCode.Z)&& KeyOpen )
                 {
-                    
+                    KeyOpen = false;
                     vector.Set(thePlayer.animator.GetFloat("DirX"), thePlayer.animator.GetFloat("DirY"));
                     switch(direction)
                     {
@@ -86,6 +100,42 @@ public class TransferMap : MonoBehaviour
                     }
                 }
             }            
+        }
+        else if(Lock)
+        {
+            //PassWordCheck();
+            if(collision.gameObject.name == "Player")
+            {
+                PassWordCheck();
+                if(NumOpen )    // Input.GetKeyDown(KeyCode.Z)&&
+                {
+                    StartCoroutine(TransferCoroutine());
+                }
+            }
+        }
+        else if(classroom)
+        {
+            if(collision.gameObject.name == "Player")
+            {
+                ClassKeyCheck();
+                if(Input.GetKeyDown(KeyCode.Z)&& classKey )    // Input.GetKeyDown(KeyCode.Z)&&
+                {
+                    StartCoroutine(TransferCoroutine());
+                }
+            }
+        }
+        else if(finalExit)
+        {
+            if(collision.gameObject.name == "Player")
+            {
+                //Debug.Log("22222finalExit에 진입");
+                FinalChoiceCheck();
+                if( choiceOpen )    // Input.GetKeyDown(KeyCode.Z)&&
+                {
+                    Debug.Log("3333z키 누름");
+                    StartCoroutine(TransferCoroutine());
+                }
+            }
         }
     }
 
@@ -124,11 +174,46 @@ public class TransferMap : MonoBehaviour
             if(theInven.inventoryItemList[j].itemID == 40002)  //소지품에 키 아이템이 있다
             {
                     Debug.Log("키획득");
-                    CanOpen = true;
+                    KeyOpen = true;
                     StartCoroutine(theEvent.EventCoroutine());
                     theInven.inventoryItemList.RemoveAt(j);
                     //keyNum = j;
             }
+        }
+    }
+    private void ClassKeyCheck()
+    {
+        for(int j = 0; j<theInven.inventoryItemList.Count; j++)  //소지품에 아이템이 있는지 검색
+        {
+            if(theInven.inventoryItemList[j].itemID == 40003)  //소지품에 키 아이템이 있다
+            {
+                    Debug.Log("교실키획득");
+                    classKey = true;
+                    //StartCoroutine(theEvent.EventCoroutine());
+                    theInven.inventoryItemList.RemoveAt(j);
+                    //keyNum = j;
+            }
+        }
+    }    
+    public void PassWordCheck()
+    {
+        
+        if(theNumSystem.GetResult())
+        {
+            //StartCoroutine(TransferCoroutine());
+
+            NumOpen = true;
+        }
+    }
+    public void FinalChoiceCheck()
+    {
+            //Debug.Log(theChoice.GetResult());
+        if(theTestChoice.cA)
+        {
+            //Debug.Log(theChoice.result);
+            //Debug.Log(theChoice.correct);
+            //Debug.Log(theChoice.GetResult());
+            choiceOpen = true;
         }
     }
 }

@@ -5,22 +5,24 @@ using UnityEngine;
 public class TestNumber : MonoBehaviour
 {
 	private OrderManager theOrder;
-	//private NumberSystem theNumber;
-	private DialogueManager theDM; //part21
+	private NumberSystem theNumber;
+	//private DialogueManager theDM; //part21
 
 	public bool flag;
-	//public int correctNumber;
-	public string[] texts; //part21
+	public int correctNumber;
+	//public string[] texts; //part21
 
 	void Start()
 	{
 		theOrder = FindObjectOfType<OrderManager>();
-		//theNumber = FindObjectOfType<NumberSystem>();
-		theDM = FindObjectOfType<DialogueManager>();
+		theNumber = FindObjectOfType<NumberSystem>();
+		//theDM = FindObjectOfType<DialogueManager>();
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
+		if(theNumber.GetResult())
+			flag = true;
 		if(!flag)
 		{
 			StartCoroutine(BCoroutine());
@@ -28,12 +30,14 @@ public class TestNumber : MonoBehaviour
 	}
 	IEnumerator BCoroutine()
 	{
-		flag = true;
+		//flag = true;
+		//if(theNumber.GetResult())
+		//	flag = true;
 		theOrder.NotMove();
-		//theNumber.ShowNumber(correctNumber);
-		theDM.ShowText(texts);//part21
-		//yield return new WaitUntil(() => !theNumber.activated);
-		yield return new WaitUntil(() => !theDM.talking);//part21
+		theNumber.ShowNumber(correctNumber);
+		//theDM.ShowText(texts);//part21
+		yield return new WaitUntil(() => !theNumber.activated);
+		//yield return new WaitUntil(() => !theDM.talking);//part21
 		theOrder.Move();
 	}
 }

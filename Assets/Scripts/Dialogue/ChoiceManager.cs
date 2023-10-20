@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ChoiceManager : MonoBehaviour
-{
+{   
     static public ChoiceManager instance;
 
     private void Awake()
@@ -42,13 +42,17 @@ public class ChoiceManager : MonoBehaviour
 
     private int count;  //배열의 크기
 
-    private int result; //선택한 선택창
+    public int result; //선택한 선택창
+
+    private TestChoice theChoice;
+    public int correct = 3;
 
     private WaitForSeconds waitTime = new WaitForSeconds(0.01f);
 
     // Start is called before the first frame update
     void Start()
     {
+        theChoice = FindObjectOfType<TestChoice>();
         theAudio = FindObjectOfType<AudioManager>();
         answerList = new List<string>();
         for(int i = 0; i<=3 ; i++)  //선택지 4개
@@ -76,9 +80,19 @@ public class ChoiceManager : MonoBehaviour
         StartCoroutine(ChoiceCoroutine());
     }
 
-    public int GetResult()
-    {
-        return result;
+    public bool GetResult() //나중에 다른 스크립트에서 이 함수만 호출
+    {//정답 유무 판별하는거 TestChoice 스크립트에 작성함, GetResult()함수 쓰고싶으면
+    // TestChoice에서 result를 바로 불러오지말고 GetResult()의 return result로 불러오기
+        //if(theChoice.correctAnswer == result)//correct == result
+        //{
+            return true;
+        //}
+        //else
+        //    return false;
+        //if(theChoice.cA == true)
+        //    return true;
+        //else
+         //   return false;
     }
 
     public void ExitChoice()

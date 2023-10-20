@@ -28,10 +28,15 @@ public class NumberSystem : MonoBehaviour
     private bool keyInput; //키처리 활성화, 비활성화.
     private bool correctFlag; //정답인지 아닌지 여부
 
+    private TestNumber theTestNum;
+    //private TransferMap theTransferMap;
+
     // Start is called before the first frame update
     void Start()
     {
         theAudio = FindObjectOfType<AudioManager>();
+        theTestNum = FindObjectOfType<TestNumber>();
+        //theTransferMap = FindObjectOfType<TransferMap>();
     }
 
     public void ShowNumber(int _correctNumber)
@@ -159,11 +164,18 @@ public class NumberSystem : MonoBehaviour
         {
             theAudio.Play(correct_sound);
             correctFlag = true;
+            //theTestNum.flag = true;
+
+            //Debug.Log("1. flag변경 완");
+            //theTransferMap.PassWordCheck();
+
         }
         else
         {
             theAudio.Play(cancel_sound);
             correctFlag = false;
+            //theTestNum.flag = false;
+
         }
         Debug.Log("우리가 낸 답 = "+ result + " / 정답 = "+correctNumber);
         StartCoroutine(ExitCoroutine());
