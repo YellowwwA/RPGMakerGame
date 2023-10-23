@@ -22,7 +22,7 @@ public class PlayerManager : MovingObject
     public string walkSound_4;
 
     private AudioManager theAudio;
-    private SaveNLoad theSaveNLoad;
+    //private SaveNLoad theSaveNLoad;
 
     private WeatherManager theWeather;
 
@@ -55,7 +55,7 @@ public class PlayerManager : MovingObject
             animator = GetComponent<Animator>();
             instance = this;
 
-            theSaveNLoad = FindObjectOfType<SaveNLoad>();
+            //theSaveNLoad = FindObjectOfType<SaveNLoad>();
             theWeather = FindObjectOfType<WeatherManager>();
         }
         else
@@ -146,11 +146,11 @@ public class PlayerManager : MovingObject
             //저장
         //    theSaveNLoad.CallSave();
         //}
-        if(Input.GetKeyDown(KeyCode.F9))
-        {
+        //if(Input.GetKeyDown(KeyCode.F9))
+        //{
             //불러오기
-            theSaveNLoad.CallLoad();
-        }
+        //    theSaveNLoad.CallLoad();
+        //}
 
         if(canMove && !notMove && !attacking)
         {

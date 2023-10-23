@@ -4,21 +4,6 @@ using UnityEngine;
 
 public class DatabaseManager : MonoBehaviour
 {
-    static public DatabaseManager instance;
-
-    private void Awake()
-    {
-        if(instance != null)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            DontDestroyOnLoad(this.gameObject);
-            instance = this;
-        }
-    }
-
     private PlayerStat thePlayerStat;
     public GameObject prefabs_Floating_text;
     public GameObject parent;

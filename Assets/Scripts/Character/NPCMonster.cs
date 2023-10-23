@@ -26,8 +26,10 @@ public class NPCMonster : MovingObject
 
     private Vector2 playerPos;
     public string nearSound;
-    private Vector2 MovePos;
+    private Vector2 MovePos = new Vector2(0, 0);
     private int MoveCheck = 0;
+
+    public bool fail = false;
 
     //private Transform player;
     //public float speed = 5f;
@@ -47,14 +49,14 @@ public class NPCMonster : MovingObject
         {   
             StartCoroutine(WarningCoroutine());
             if(Mathf.Abs(playerPos.x - this.transform.position.x) > Mathf.Abs(playerPos.y - this.transform.position.y))
-            {   Debug.Log("가까이에있음111");
+            {   //Debug.Log("가까이에있음111");
                 if(playerPos.x > this.transform.position.x)
                     direction = "RIGHT";
                 else if(playerPos.x < this.transform.position.x)
                     direction = "LEFT";
             }
             else
-            {Debug.Log("가까이에있음222");
+            {//Debug.Log("가까이에있음222");
                 if(playerPos.y > this.transform.position.y)
                     direction = "UP";
                 else if(playerPos.y < this.transform.position.y)
@@ -69,10 +71,15 @@ public class NPCMonster : MovingObject
                 AudioManager.instance.Play(nearSound);
                 base.Move(direction);
             }
+            Debug.Log("무브체크는");
+            Debug.Log(MoveCheck);
             if(MoveCheck == 1)
                 Destroy(this.gameObject);
             else if(MoveCheck == 2)
-                Debug.Log("게임오버");
+            {
+                fail = true; //게임오버
+                Destroy(this.gameObject);
+            }
         }
         else
         {
@@ -143,16 +150,16 @@ public class NPCMonster : MovingObject
     private bool NearPlayer()
     {
         playerPos = PlayerManager.instance.transform.position;
-        if(Mathf.Abs(Mathf.Abs(playerPos.x) - Mathf.Abs(this.transform.position.x)) <= base.speed * walkCount * 6f)
+        if(Mathf.Abs(Mathf.Abs(playerPos.x) - Mathf.Abs(this.transform.position.x)) <= base.speed * walkCount * 10f)
         {
-            if(Mathf.Abs(Mathf.Abs(playerPos.y) - Mathf.Abs(this.transform.position.y)) <= base.speed * walkCount * 6f)
+            if(Mathf.Abs(Mathf.Abs(playerPos.y) - Mathf.Abs(this.transform.position.y)) <= base.speed * walkCount * 10f)
             {
                 return true;
             }
         }
-        if(Mathf.Abs(Mathf.Abs(playerPos.y) - Mathf.Abs(this.transform.position.y)) <= base.speed * walkCount * 6f)
+        if(Mathf.Abs(Mathf.Abs(playerPos.y) - Mathf.Abs(this.transform.position.y)) <= base.speed * walkCount * 10f)
         {
-            if(Mathf.Abs(Mathf.Abs(playerPos.x) - Mathf.Abs(this.transform.position.x)) <= base.speed * walkCount * 6f)
+            if(Mathf.Abs(Mathf.Abs(playerPos.x) - Mathf.Abs(this.transform.position.x)) <= base.speed * walkCount * 10f)
             {
                 return true;
             }
@@ -162,15 +169,21 @@ public class NPCMonster : MovingObject
     IEnumerator WarningCoroutine()
     {   
         Debug.Log("코르틴 시작");
-        yield return new WaitForSeconds(4f);
-        MovePos.x = playerPos.x;
-        MovePos.y = playerPos.y;
-        Debug.Log("4초안에 멈추면 멈춘 위치 저장");
+        yield return new WaitForSeconds(3f);
+        if(MovePos.x == 0)
+        {
+            MovePos.x = playerPos.x;
+            MovePos.y = playerPos.y;
+        }
+        Debug.Log(MovePos.x+ "  MovePos  "+MovePos.y);
         yield return new WaitForSeconds(5f);
-        Debug.Log("멈춘 후부터 다시 5초 경과, 이전 위치와 비교");
+        Debug.Log("멈춘 후부터 다시 3초 경과, 이전 위치와 비교");
+        Debug.Log(playerPos.x+ "  playerPos  "+playerPos.y);
         if((MovePos.x == playerPos.x)&&(MovePos.y == playerPos.y))
             MoveCheck = 1;
         else if((MovePos.x != playerPos.x)||(MovePos.y != playerPos.y))
+            MoveCheck = 2;
+        else
             MoveCheck = 2;
         Debug.Log(MoveCheck);
 

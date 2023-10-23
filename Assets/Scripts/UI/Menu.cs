@@ -1,12 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
-    public static Menu instance;
 
-     private void Awake()
+    public GameObject go;
+    public AudioManager theAudio;
+
+    public string call_sound;
+    public string cancel_sound;
+
+    public OrderManager theOrder;
+
+    public GameObject[] gos;
+
+    private bool activated;
+
+    static public Menu instance;
+
+    private void Awake()
     {
         if(instance != null)
         {
@@ -19,16 +33,6 @@ public class Menu : MonoBehaviour
         }
     }
 
-    public GameObject go;
-    public AudioManager theAudio;
-
-    public string call_sound;
-    public string cancel_sound;
-
-    public OrderManager theOrder;
-
-    private bool activated;
-
     public void Exit()
     {
         Application.Quit();
@@ -40,6 +44,15 @@ public class Menu : MonoBehaviour
         go.SetActive(false);
         theOrder.Move();
         theAudio.Play(cancel_sound);
+    }
+
+    public void GoToTitle()
+    {
+        for(int i = 0; i<gos.Length; i++)
+            Destroy(gos[i]);
+        go.SetActive(false);
+        activated = false;
+        SceneManager.LoadScene("title");
     }
 
     // Update is called once per frame

@@ -18452,7 +18452,7 @@ MonoBehaviour:
     sentences:
     - ' '
     sprites:
-    - {fileID: 21300000, guid: 1a9efde8302231048b970523f6fde14a, type: 3}
+    - {fileID: 21300000, guid: 015ade0e95c57de4a823ed50aa9764c0, type: 3}
     dialogueWindows:
     - {fileID: 0}
 --- !u!61 &1139853544
