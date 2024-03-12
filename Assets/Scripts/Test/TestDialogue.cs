@@ -31,6 +31,5 @@ public class TestDialogue : MonoBehaviour
         yield return new WaitUntil(() => !theDM.talking);
 
         theOrder.Move();
-
     }
 }

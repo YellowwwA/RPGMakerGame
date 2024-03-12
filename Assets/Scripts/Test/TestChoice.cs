@@ -10,6 +10,9 @@ public class TestChoice : MonoBehaviour
 
     private OrderManager theOrder;
     private ChoiceManager theChoice;
+    private AudioManager theAudio;
+    public string cancel_sound;
+    public string correct_sound;
 
     public bool flag;
     public bool cA = false;
@@ -19,6 +22,7 @@ public class TestChoice : MonoBehaviour
     {
         theOrder = FindObjectOfType<OrderManager>();
         theChoice = FindObjectOfType<ChoiceManager>();
+        theAudio = FindObjectOfType<AudioManager>();
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -41,11 +45,17 @@ public class TestChoice : MonoBehaviour
         theChoice.ShowChoice(choice);
         yield return new WaitUntil(()=>!theChoice.choiceIng);
         theOrder.Move();
-        if(theChoice.result + 1 == correctAnswer)
+        if (theChoice.result + 1 == correctAnswer)
+        {
             cA = true;
+            theAudio.Play(correct_sound);
+        }
         else
+        {
             cA = false;
-            
+            theAudio.Play(cancel_sound);
+        }
+   
         //Debug.Log(theChoice.GetResult());
         //Debug.Log(theChoice.result);
         //Debug.Log(theChoice.correct);
